@@ -1,0 +1,51 @@
+.logoText {
+  background: linear-gradient(45deg,
+      #1e3a8a 0%,
+      #1e40af 25%,
+      #1e3a8a 50%,
+      #1e40af 75%,
+      #1e3a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  text-shadow: 0 0 25px rgba(147, 197, 253, 0.3);
+  animation: starLight 4s ease-in-out infinite;
+  letter-spacing: 0.05em;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+}
+
+.logoText:hover {
+  animation: starGlow 2s ease-in-out infinite;
+  cursor: pointer;
+}
+
+@keyframes starLight {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px rgba(147, 197, 253, 0.8)) drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 5px rgba(147, 197, 253, 0.8)) drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+  }
+}
+
+@keyframes starGlow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(147, 197, 253, 0.9)) drop-shadow(0 0 8px rgba(59, 130, 246, 0.7));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 8px rgba(147, 197, 253, 0.9)) drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+  }
+}
+
+@media (max-width: 1024px) {
+  .logoText {
+    letter-spacing: 0.03em;
+  }
+}
