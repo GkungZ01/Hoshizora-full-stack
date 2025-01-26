@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/navbar";
+import Provider from "@/components/auth/Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,13 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} antialiased`}>
-        <div id="root" className="flex relative flex-col h-screen">
-          <Navbar />
-          {children}
-        </div>
-      </body>
-    </html>
+    <Provider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} antialiased`}>
+          <div id="root" className="flex relative flex-col h-screen">
+            <Navbar />
+            {children}
+          </div>
+        </body>
+      </html>
+    </Provider>
   );
 }

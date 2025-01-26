@@ -139,7 +139,7 @@ export default function RegisterForm() {
 
         <p className="text-center mt-6 sm:mt-8 text-sm sm:text-base">
           Already have an account?{" "}
-          <Link href="/login" className="link link-primary">
+          <Link href="/auth/signIn" className="link link-primary">
             Sign in
           </Link>
         </p>

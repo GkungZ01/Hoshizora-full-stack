@@ -1,43 +1,44 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { FiMail, FiLock, FiGithub } from 'react-icons/fi'
-import styles from './login.module.css'
-import type { Metadata } from 'next'
 
+import { signIn, signOut, useSession } from "next-auth/react";
 
-export default function LoginPage() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FiMail, FiLock, FiGithub } from "react-icons/fi";
+import styles from "./SignIn.module.css";
+
+export default function Login() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
     try {
       // Add your authentication logic here
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      router.push('/dashboard')
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+      router.push("/dashboard");
     } catch (err) {
-      setError('Invalid credentials')
+      setError("Invalid credentials");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full h-full flex items-center justify-center px-4">
@@ -108,7 +109,7 @@ export default function LoginPage() {
 
         <p className="text-center mt-4">
           Don't have an account?{" "}
-          <a href="/register" className="link link-primary">
+          <a href="/auth/signUp" className="link link-primary">
             Sign up
           </a>
         </p>
