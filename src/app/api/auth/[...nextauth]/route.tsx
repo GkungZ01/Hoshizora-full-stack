@@ -26,6 +26,11 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      return true;
+    }
+  },
   pages: {
     signIn: "/auth/signIn",
   },
