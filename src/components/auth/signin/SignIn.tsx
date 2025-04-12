@@ -1,13 +1,14 @@
 'use client'
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession, signOut } from "next-auth/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiMail, FiLock, FiGithub } from "react-icons/fi";
 import styles from "./SignIn.module.css";
 
 export default function Login() {
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,6 +16,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      // router.push("/dashboard");
+      signOut();
+    }
+  }, [status, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -102,7 +110,8 @@ export default function Login() {
 
         <div className="divider my-6">OR</div>
 
-        <button className="btn btn-outline w-full gap-2">
+        <button className="btn btn-outline w-full gap-2"
+          onClick={() => signIn("github")}>
           <FiGithub className="w-5 h-5" />
           Continue with GitHub
         </button>
