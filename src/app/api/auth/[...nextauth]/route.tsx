@@ -11,23 +11,7 @@ const authOptions: NextAuthOptions = {
       name: "GitHub",
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials, req) {
-        const user = { id: "1", name: "J Smith", email: "jsmith@example.com" };
-          
-        if (user) {
-          return user;
-        } else {
-          return null;
-        }
-      },
-    }),
+    })
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -45,10 +29,10 @@ const authOptions: NextAuthOptions = {
               email: user.email,
               name: user.name,
               image: user.image,
+              githubUsername: profile?.login
             },
           })
           console.log( new Date().getTime()  + "New user signed in:", user);
-          console.log(profile)
         }
       }
       return true; // Return true to allow sign-in

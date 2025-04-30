@@ -9,20 +9,20 @@ import styles from "./SignIn.module.css";
 
 export default function Login() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      // router.push("/dashboard");
-      signOut();
-    }
-  }, [status, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
