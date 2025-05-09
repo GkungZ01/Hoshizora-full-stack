@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { FiMail, FiLock, FiUser, FiGithub } from 'react-icons/fi'
 import styles from './RegisterForm.module.css'
 
@@ -17,16 +18,48 @@ export default function RegisterForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  const [error, setError] = useState('')
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.acceptTerms) return
+
     
+    setError('')
+
+    if (!formData.acceptTerms) {
+      setError('กรุณายอมรับข้อกำหนดและเงื่อนไขการใช้งาน')
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('รหัสผ่านไม่ตรงกัน')
+      return
+    }
+
     setLoading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      router.push('/login')
-    } catch (err) {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.username,
+          email: formData.email,
+          password: formData.password
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'เกิดข้อผิดพลาดในการลงทะเบียน')
+      }
+
+      router.push('/auth/signIn?registered=true')
+    } catch (err: any) {
       console.error(err)
+      setError(err.message || 'เกิดข้อผิดพลาดในการลงทะเบียน')
     } finally {
       setLoading(false)
     }
@@ -36,6 +69,12 @@ export default function RegisterForm() {
     <main className="w-full h-full flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className={`${styles.glassCard} w-full max-w-md mx-auto`}>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8">Create Account</h1>
+
+        {error && (
+          <div className="alert alert-error mb-4">
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div className="form-control">
@@ -132,7 +171,11 @@ export default function RegisterForm() {
 
         <div className="divider my-6 sm:my-8">OR</div>
 
-        <button className="btn btn-outline w-full h-12 text-base sm:text-lg gap-2">
+        <button
+          type="button"
+          onClick={() => signIn('github')}
+          className="btn btn-outline w-full h-12 text-base sm:text-lg gap-2"
+        >
           <FiGithub className="w-5 h-5" />
           Continue with GitHub
         </button>

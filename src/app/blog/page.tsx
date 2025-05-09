@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FiClock, FiTag, FiEye } from 'react-icons/fi'
-// import type { BlogPost as BlogPostType } from '@/types/blog'
+
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -63,7 +63,7 @@ export default function BlogPage() {
       views: 9999,
       date: '2024-12-29'
     },
-    // Add more blog posts here
+    
   ]
 
   return (

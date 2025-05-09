@@ -10,8 +10,15 @@ import styles from "./SignIn.module.css";
 export default function Login() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
+    
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("registered") === "true") {
+      setSuccessMessage("ลงทะเบียนสำเร็จ กรุณาเข้าสู่ระบบด้วยบัญชีที่สร้างไว้");
+    }
+
     if (status === "authenticated") {
       router.push("/");
     }
@@ -38,11 +45,23 @@ export default function Login() {
     setError("");
 
     try {
-      // Add your authentication logic here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-      router.push("/dashboard");
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        return;
+      }
+
+      
+      router.push("/");
+      router.refresh();
     } catch (err) {
-      setError("Invalid credentials");
+      console.error(err);
+      setError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
     } finally {
       setLoading(false);
     }
@@ -52,6 +71,12 @@ export default function Login() {
     <div className="w-full h-full flex items-center justify-center px-4">
       <div className={styles.glassCard}>
         <h1 className="text-3xl font-bold text-center mb-8">Welcome Back</h1>
+
+        {successMessage && (
+          <div className="alert alert-success mb-4">
+            <span>{successMessage}</span>
+          </div>
+        )}
 
         {error && (
           <div className="alert alert-error mb-4">

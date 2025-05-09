@@ -1,152 +1,222 @@
-.textContainer {
-  max-width: 70%;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   width: 100%;
-  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #040720 0%, #0f1e4a 100%);
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: twinkle var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: var(--opacity);
+    transform: scale(var(--scale));
+  }
+}
+
+.shootingStar {
+  position: absolute;
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+  transform: rotate(var(--angle));
+  top: var(--top);
+  left: var(--left);
+  animation: shooting 4s linear infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes shooting {
+  0% {
+    transform: translateX(-100px) rotate(var(--angle));
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  10% {
+    transform: translateX(calc(var(--distance) * 1px)) rotate(var(--angle));
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(calc(var(--distance) * 1px)) rotate(var(--angle));
+    opacity: 0;
+  }
+}
+
+.title {
+  font-size: 4rem;
+  color: transparent;
+  background: linear-gradient(
+    45deg,
+    #1e90ff 0%,
+    #70a5fd 25%,
+    #ffffff 50%,
+    #70a5fd 75%,
+    #1e90ff 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  position: relative;
+  z-index: 10;
+  animation: shine 6s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 9.5ch;
+  }
+}
+
+.titleContainer {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 1;
 }
 
-.starryText {
-  font-family: 'Space Mono', monospace;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  background: linear-gradient(
-    45deg,
-    #1e40af 0%,
-    #1e3a8a 50%,
-    #1e3a8a 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  position: relative;
-  text-shadow: 0 0 20px rgba(147, 197, 253, 0.5);
-  animation:
-    blink-caret 0.75s step-end infinite,
-    starLight 2s ease-in-out infinite,
-    fillText 2.5s cubic-bezier(0.4, 0, 0.2, 1),
-    revealText 1.5s ease-out forwards;
-  overflow: hidden;
-  border-right: 3px solid;
-  width: 0;
-  animation-fill-mode: forwards;
-  font-size: clamp(2rem, 8vw, 6rem);
-  line-height: 1.2;
+.subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  margin-top: 2rem;
   text-align: center;
-}
-
-.starryText::after {
-  content: '';
-  position: absolute;
-  right: -4px;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background: #3b82f6;
-  animation: blink 0.8s steps(2) infinite;
-}
-
-.codeText {
-  font-family: 'Space Mono', monospace;
-  color: transparent;
-  background: linear-gradient(90deg,
-    #94a3b8 0%,
-    #64748b 50%,
-    #475569 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: 
-    fadeIn 1s ease-out 2.8s forwards,
-    typing 2s cubic-bezier(0.4, 0, 0.2, 1) 2.8s,
-    blink 0.75s step-end infinite,
-    fadeUp 0.8s ease-out 2.5s forwards;
-  white-space: nowarp;
-  letter-spacing: 0.05em;
-  position: relative;
+  font-family: monospace;
   overflow: hidden;
-  font-size: clamp(0.875rem, 2vw, 1.125rem);
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeIn 1s ease 3s forwards, typeSubtitle 2s steps(35) 3s forwards;
+  width: 0;
+  border-right: 3px solid #70a5fd;
 }
 
-@keyframes typing {
-  from { 
+@keyframes typeSubtitle {
+  from {
     width: 0;
-    opacity: 0;
   }
-  to { 
-    width: 100%;
-    opacity: 1;
-  }
-}
-
-@keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: rgba(147, 197, 253, 0.8) }
-}
-
-@keyframes starLight {
-  0%, 100% {
-    filter: drop-shadow(0 0 3px rgba(147, 197, 253, 0.8))
-           drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 8px rgba(147, 197, 253, 0.8))
-           drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
-    transform: scale(1.02);
+  to {
+    width: 35ch;
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fillText {
   from {
-    background-position: 200% center;
-  }
-  to {
-    background-position: 0% center;
-  }
-}
-
-@keyframes revealText {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes blink {
-  0%, 100% {
     opacity: 0;
   }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeUp {
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-@media (max-width: 640px) {
-  .textContainer {
-    padding: 0.5rem;
+.orbitalRing {
+  position: absolute;
+  border: 1px solid rgba(112, 165, 253, 0.2);
+  border-radius: 50%;
+  animation: rotateRing 10s linear infinite;
+}
+
+.ring1 {
+  width: 300px;
+  height: 300px;
+  animation-duration: 20s;
+}
+
+.ring2 {
+  width: 500px;
+  height: 500px;
+  animation-duration: 30s;
+}
+
+.ring3 {
+  width: 700px;
+  height: 700px;
+  animation-duration: 40s;
+}
+
+@keyframes rotateRing {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orb {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #70a5fd;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px #70a5fd;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
   }
   
-  .starryText {
-    letter-spacing: 0.1em;
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .ring1 {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .ring2 {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .ring3 {
+    width: 400px;
+    height: 400px;
   }
 }

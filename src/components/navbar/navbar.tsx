@@ -1,101 +1,69 @@
-'use client'
-import { useState, useEffect } from 'react';
-import { HiOutlineSun, HiOutlineMoon, HiMenu } from 'react-icons/hi';
-import { FaUserCircle } from 'react-icons/fa';
-import Link from 'next/link';
-import styles from './navbar.module.css';
-import { sign } from 'crypto';
+"use client";
+import { useState } from "react";
+import { HiMenu } from "react-icons/hi";
+import Link from "next/link";
+import styles from "./navbar.module.css";
+import AuthButton from "../auth/AuthButton";
 
 const Navbar = () => {
-  const [theme, setTheme] = useState('business');
   const [isOpen, setIsOpen] = useState(false);
 
   const menuList = [
-    { name: 'Home', href: '/' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'About', href: '/about' },
-    { name: 'Test', href: '/test' },
+    { name: "Home", href: "/" },
+    { name: "Blog", href: "/blog" },
+    { name: "About", href: "/about" }
   ];
 
-  const authLinks = {
-    signin: "/auth/signIn",
-    signup: "/auth/signUp",
-  };
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'business';
-    setTheme(savedTheme);
-    document.documentElement.setAttribute('data-theme', savedTheme);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'business' ? 'winter' : 'business';
-    setTheme(newTheme);
-  };
+  if (typeof window !== 'undefined') {
+    document.documentElement.setAttribute("data-theme", "business");
+  }
 
   return (
     <div
-      className="w-full h-fit navbar bg-base-100/90 backdrop-blur-md sticky top-0 z-50 
-      border-b border-base-content/10 shadow-sm px-4 sm:px-6 lg:px-8"
+      className={`w-full h-fit navbar sticky top-0 z-50 px-4 sm:px-6 lg:px-8 ${styles.navbarContainer}`}
     >
       <div className="flex-1">
-        <Link href="/" className={`btn btn-ghost text-lg sm:text-xl font-bold tracking-wider ${styles.logoText}`}>
-          Hoshizora
+        <Link
+          href="/"
+          className={`btn btn-ghost text-lg sm:text-xl ${styles.logoText}`}
+        >
+          HOSHIZORA
         </Link>
       </div>
 
-      {/* Mobile menu button */}
       <button
-        className="btn btn-ghost btn-circle lg:hidden"
+        className={`btn btn-circle lg:hidden ${styles.menuButton}`}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
         <HiMenu className="w-6 h-6" />
       </button>
 
-      {/* Desktop navigation */}
-      <div className="hidden lg:flex lg:items-center lg:gap-2">
+      <div className="hidden lg:flex lg:items-center lg:gap-4">
         {menuList.map((item, index) => (
-          <Link key={index} href={item.href} className="btn btn-ghost">
+          <Link key={index} href={item.href} className={`btn btn-ghost ${styles.navItem}`}>
             {item.name}
           </Link>
         ))}
 
-        <button onClick={toggleTheme} className="btn btn-ghost btn-circle" aria-label="Toggle theme">
-          {theme === "business" ? <HiOutlineSun className="w-5 h-5" /> : <HiOutlineMoon className="w-5 h-5" />}
-        </button>
-
-        <Link href={authLinks.signin} className="btn btn-ghost btn-circle">
-          <FaUserCircle className="w-5 h-5" />
-        </Link>
+        <AuthButton />
       </div>
 
-      {/* Mobile menu */}
       {isOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 p-4 bg-base-100 border-b border-base-content/10">
+        <div className={`lg:hidden absolute top-full left-0 right-0 p-4 border-b border-primary/30 ${styles.mobileMenu}`}>
           <div className="flex flex-col gap-2 w-full">
             {menuList.map((item, index) => (
               <Link
                 key={index}
                 href={item.href}
-                className="btn btn-ghost w-full justify-start"
+                className={`btn btn-ghost w-full justify-start ${styles.navItem}`}
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-base-content/10">
-              <button onClick={toggleTheme} className="btn btn-ghost btn-circle">
-                {theme === "business" ? <HiOutlineSun className="w-5 h-5" /> : <HiOutlineMoon className="w-5 h-5" />}
-              </button>
-              <Link href={authLinks.signin} className="btn btn-ghost btn-circle">
-                <FaUserCircle className="w-5 h-5" />
-              </Link>
+            <div className="flex items-center justify-end mt-2 pt-2 border-t border-primary/20">
+              <AuthButton />
             </div>
           </div>
         </div>

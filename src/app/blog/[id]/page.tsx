@@ -15,7 +15,7 @@
     date: string
   }
 
-  // Mock data - in real app this would come from an API/database
+  
   const blogs: LocalBlogPost[] = [
     {
       id: '1',
@@ -57,7 +57,7 @@
       views: 9999,
       date: '2024-12-29'
     },
-    // ... other blog posts
+    
   ]
 
   type Props = {

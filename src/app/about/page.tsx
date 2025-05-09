@@ -52,14 +52,14 @@ export default function AboutPage() {
 
         for (const username of usernames) {
           try {
-            const profileRes = await fetch(`https://api.github.com/users/${username}`)
+            const profileRes = await fetch(`https://api.github.com/users/${username}`);
             if (!profileRes.ok) {
               profileData[username] = null
               continue
             }
             profileData[username] = await profileRes.json()
 
-            const reposRes = await fetch(`https://api.github.com/users/${username}/repos`)
+            const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
             if (reposRes.ok) {
               repoData[username] = await reposRes.json()
             } else {
