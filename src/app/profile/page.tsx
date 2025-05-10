@@ -23,35 +23,29 @@ export default function ProfilePage() {
       return
     }
 
-    
     if (session?.user) {
       setUserData(session.user)
       setLoading(false)
     }
 
-    
     if (starsRef.current) {
       const starsContainer = starsRef.current
       starsContainer.innerHTML = ''
 
-      // Reduced number of stars for minimal design
       const numStars = 80
       for (let i = 0; i < numStars; i++) {
         const star = document.createElement('div')
         star.className = styles.star
-
 
         const x = Math.random() * 100
         const y = Math.random() * 100
         star.style.left = `${x}%`
         star.style.top = `${y}%`
 
-        // Smaller, more subtle stars
         const scale = Math.random() * 1.2 + 0.3
         const opacity = Math.random() * 0.5 + 0.2
         const duration = Math.random() * 3 + 3
         const delay = Math.random() * 2
-
 
         star.style.setProperty('--scale', scale.toString())
         star.style.setProperty('--opacity', opacity.toString())
@@ -60,8 +54,6 @@ export default function ProfilePage() {
 
         starsContainer.appendChild(star)
       }
-
-      // Removed shooting stars for minimal design
     }
   }, [session, status, router])
 
@@ -80,9 +72,9 @@ export default function ProfilePage() {
       <div className={styles.starryBackground}></div>
       <div className={styles.stars} ref={starsRef}></div>
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 sm:px-4">
         <div className="max-w-4xl mx-auto">
-          <h1 className={`text-3xl font-bold mb-8 text-white ${styles.fadeIn}`}>
+          <h1 className={`text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-white ${styles.fadeIn}`}>
             โปรไฟล์ของฉัน
           </h1>
 
@@ -93,37 +85,38 @@ export default function ProfilePage() {
             </div>
 
             <div className={styles.contentSection}>
-              <div className="flex justify-between items-end mb-8">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-6 sm:mb-8 gap-3 sm:gap-0">
+                <div className="relative flex flex-col items-center">
                   <div className={styles.profileAvatar}>
                     <div className={styles.avatarRing}></div>
-                    <div className="w-32 h-32 rounded-full overflow-hidden bg-[#0f1c3f]">
+                    <div className="w-16 h-16 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-[#0f1c3f]">
                       {userData?.image ? (
                         <Image
                           src={userData.image}
                           alt={userData.name || 'โปรไฟล์'}
                           width={128}
                           height={128}
-                          className="rounded-full"
+                          className="rounded-full w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="flex items-center justify-center w-full h-full text-5xl font-bold text-white/70">
+                        <div className="flex items-center justify-center w-full h-full text-3xl sm:text-5xl font-bold text-white/70">
                           {(userData?.name?.charAt(0) || userData?.email?.charAt(0) || '?').toUpperCase()}
                         </div>
                       )}
                     </div>
                   </div>
+                  <div className="block sm:hidden sm:p-2  w-full mt-2">
+                    <Link href="/settings" className={styles.editButton}>
+                      <FiSettings className="text-lg sm:text-sm" />
+                      แก้ไขโปรไฟล์
+                    </Link>
+                  </div>
                 </div>
-
-                <Link href="/settings" className={styles.editButton}>
-                  <FiSettings className="text-lg" />
-                  แก้ไขโปรไฟล์
-                </Link>
               </div>
 
               <h2 className={styles.profileName}>{userData?.name || 'ผู้ใช้ไม่ระบุชื่อ'}</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-6 sm:mt-8">
                 <div className={`${styles.infoItem} ${styles.fadeIn} ${styles.delayAnimation1}`}>
                   <div className={styles.infoIcon}>
                     <FiMail className="text-[#70a5fd] text-2xl" />

@@ -72,7 +72,6 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1), 0 0 20px rgba(30, 64, 175, 0.05);
   transition: all 0.5s ease;
   position: relative;
-  overflow: hidden;
 }
 
 .navbarContainer:after {
@@ -152,7 +151,7 @@
   background: rgba(10, 15, 30, 0.7);
   backdrop-filter: blur(6px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -169,5 +168,13 @@
 @media (max-width: 1024px) {
   .logoText {
     letter-spacing: 0.05em;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoText {
+    padding: 0.2rem 0.4rem; 
+    font-size: 1.1rem; 
+    letter-spacing: 0.02em; 
   }
 }

@@ -130,25 +130,72 @@
 
 @media (max-width: 768px) {
   .glassCard {
-    padding: 0.75rem;
+    margin: 1rem auto;
+    padding: 1rem;
   }
 
-  .avatarContainer {
-    width: 100px;
-    height: 100px;
-    border-width: 3px;
+  .cardHeader {
+    flex-direction: column; 
+    align-items: center; 
+    padding: 1.5rem; 
+  }
+
+  .avatarWrapper {
+    margin-right: 0; 
+    margin-bottom: 1rem; 
+  }
+
+  .profileInfo h2 {
+    font-size: 1.5rem; 
+    text-align: center;
+  }
+
+  .profileInfo p {
+    font-size: 0.875rem; 
+    text-align: center;
   }
 
   .statsContainer {
-    grid-template-columns: 1fr;
-    padding: 1rem;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 0.5rem; 
+  }
+
+  .stat {
+    padding: 0.5rem; 
+    font-size: 0.8rem;
+  }
+
+  .pageTitle {
+    font-size: 2.5rem; 
+    margin-bottom: 2rem;
+  }
+
+  .projectGrid {
+    grid-template-columns: 1fr; 
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .profileInfo h2 {
+    font-size: 1.3rem;
+  }
+
+  .statsContainer {
+    grid-template-columns: 1fr; 
   }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .glassCard {
-    max-width: 90%;
+    max-width: 95%; 
     padding: 1.5rem;
+  }
+  .projectGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 

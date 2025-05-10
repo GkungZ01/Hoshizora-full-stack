@@ -268,7 +268,8 @@
 
 @media (min-width: 768px) {
   .gridContainer {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 }
 
@@ -278,4 +279,68 @@
 
 .delayAnimation2 {
   animation-delay: 0.2s;
+}
+
+
+@media (max-width: 768px) {
+  .settingsContainer {
+    padding: 2rem 0; 
+  }
+
+  .settingsHeader {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .settingsCard {
+    margin-bottom: 1rem;
+  }
+
+  .cardHeader {
+    padding: 1rem; 
+  }
+
+  .cardTitle {
+    font-size: 1rem; 
+  }
+
+  .cardBody {
+    padding: 1rem; 
+  }
+
+  .formLabel {
+    font-size: 0.8rem; 
+  }
+
+  .input {
+    padding: 0.6rem 0.8rem 0.6rem 2.2rem; 
+  }
+
+  .inputIcon {
+    font-size: 0.9rem; 
+    left: 0.8rem;
+  }
+
+  .submitButton {
+    padding: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .settingsHeader {
+    font-size: 1.5rem; 
+  }
+  .cardTitle {
+    font-size: 0.9rem; 
+  }
+  .formLabel {
+    font-size: 0.75rem; 
+  }
+  .input {
+    padding: 0.5rem 0.7rem 0.5rem 2rem;
+  }
+  .inputIcon {
+    font-size: 0.8rem;
+    left: 0.7rem;
+  }
 }

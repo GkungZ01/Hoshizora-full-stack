@@ -240,3 +240,184 @@
 .delayAnimation4 {
   animation-delay: 0.4s;
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profileHeader {
+    height: 100px; 
+  }
+
+  .profileAvatar {
+    margin-top: -50px;
+    width: 100px; 
+    height: 100px;
+  }
+
+  .profileName {
+    font-size: 1.5rem; 
+    text-align: center;
+  }
+
+  .contentSection {
+    padding: 1.5rem;
+  }
+
+  .infoItem {
+    padding: 0.75rem; 
+    flex-direction: column; 
+    align-items: center;
+  }
+
+  .infoIcon {
+    margin-right: 0; 
+    margin-bottom: 0.5rem; 
+  }
+
+  .infoLabel {
+    text-align: center;
+  }
+
+  .infoValue {
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .editButton {
+    width: 100%;
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .profileHeader {
+    height: 80px;
+  }
+  .profileAvatar {
+    margin-top: -40px;
+    width: 80px;
+    height: 80px;
+  }
+  .profileName {
+    font-size: 1.3rem;
+  }
+  .contentSection {
+    padding: 1rem;
+  }
+  .infoItem {
+    padding: 0.6rem;
+  }
+  .editButton {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .profileContainer {
+    padding: 1.2rem 0 0 0;
+    min-height: 100vh;
+  }
+  .profileCard {
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(10, 15, 30, 0.10);
+    margin: 0 0.2rem;
+    padding: 0;
+  }
+  .profileHeader {
+    height: 70px;
+  }
+  .profileHeaderBg {
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+  .profileAvatar {
+    margin-top: -35px;
+    width: 70px;
+    height: 70px;
+  }
+  .avatarRing {
+    display: none;
+  }
+  .contentSection {
+    padding: 1rem 0.5rem 1.5rem 0.5rem;
+  }
+  .profileName {
+    font-size: 1.1rem;
+    margin-bottom: 0.7rem;
+    text-align: center;
+  }
+  .infoItem {
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0.3rem;
+    margin-bottom: 0.7rem;
+    border-radius: 0.3rem;
+  }
+  .infoIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+    margin-right: 0;
+    margin-bottom: 0.3rem;
+  }
+  .infoLabel, .infoValue {
+    text-align: center;
+    font-size: 0.85rem;
+  }
+  .editButton {
+    width: 100%;
+    margin-top: 1.2rem;
+    font-size: 1.05rem;
+    padding: 0.7rem 0;
+    border-radius: 0.6rem;
+    box-shadow: 0 2px 8px rgba(112, 165, 253, 0.10);
+    background: linear-gradient(90deg, rgba(112,165,253,0.18) 0%, rgba(30,58,138,0.10) 100%);
+    color: #70a5fd;
+    border: 1.5px solid #70a5fd;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    display: none;
+  }
+  .editButton:hover {
+    background: rgba(112,165,253,0.25);
+    color: #fff;
+    border-color: #fff;
+  }
+  .loadingSpinner {
+    width: 40px;
+    height: 40px;
+  }
+  .stars {
+    z-index: -5;
+  }
+}
+
+@media (max-width: 400px) {
+  .profileHeader {
+    height: 50px;
+  }
+  .profileAvatar {
+    margin-top: -25px;
+    width: 48px;
+    height: 48px;
+  }
+  .profileName {
+    font-size: 0.95rem;
+  }
+  .contentSection {
+    padding: 0.5rem 0.2rem 1rem 0.2rem;
+  }
+  .infoItem {
+    padding: 0.3rem 0.1rem;
+  }
+  .editButton {
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    display: none;
+  }
+}
