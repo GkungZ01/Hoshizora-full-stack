@@ -1,21 +1,62 @@
 import { NextAuthOptions } from "next-auth";
+import { DefaultSession } from "next-auth";
+
+// Augment NextAuth types
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession["user"];
+  }
+
+  interface User {
+    id: string;
+    role: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: string;
+  }
+}
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import { compare } from "bcryptjs";
-import prisma from "./prisma";
+import { MongoClient, ObjectId } from "mongodb";
+
+const uri = process.env.MONGODB_URI || "";
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
+if (process.env.NODE_ENV === "development") {
+  let globalWithMongo = global as typeof global & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
+
+  if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(uri);
+    globalWithMongo._mongoClientPromise = client.connect();
+  }
+  clientPromise = globalWithMongo._mongoClientPromise;
+} else {
+  client = new MongoClient(uri);
+  clientPromise = client.connect();
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
-      name: "GitHub",
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: "อีเมล", type: "email" },
+        password: { label: "รหัสผ่าน", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -23,108 +64,65 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email }
+          const mongoClient = await clientPromise;
+          const db = mongoClient.db(process.env.MONGODB_DB || "hoshizora");
+          const usersCollection = db.collection("users");
+
+          const user = await usersCollection.findOne({
+            email: credentials.email,
           });
 
-          if (!user || !user.password) {
+          if (!user) {
             return null;
           }
-          
-          const isPasswordValid = await compare(credentials.password, user.password);
+
+          const isPasswordValid = await compare(
+            credentials.password,
+            user.password
+          );
 
           if (!isPasswordValid) {
             return null;
           }
 
           return {
-            id: user.id,
-            name: user.name,
+            id: user._id.toString(),
             email: user.email,
+            name: user.name,
             image: user.image,
-            role: user.role
+            role: user.role,
           };
         } catch (error) {
-          console.error("Auth error:", error);
+          console.error("เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์:", error);
           return null;
         }
-      }
-    })
+      },
+    }),
   ],
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
-    async signIn({ user, account, profile }) {
-      if (account?.provider === "github") {
-        const existingUser = await prisma.user.findFirst({
-          where: { email: user.email },
-        });
-
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              email: user.email,
-              name: user.name,
-              image: user.image,
-              githubUsername: (profile as any)?.login,
-              role: "USER" // Default role
-            },
-          });
-          console.log(new Date().toISOString() + " - New user signed in:", user.email);
-        }
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
-      return true;
+      return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role || "USER";
+        token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }) {
-      if (session.user) {
-        (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
-      }
-      return session;
-    }
-  },
-  session: {
-    strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 1 day
   },
   secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signIn: "/auth/signIn",
-    error: "/auth/error",
+  session: {
+    strategy: "jwt",
   },
+  debug: process.env.NODE_ENV === "development",
 };
 
-// Helper function to check if user has admin permissions
-export async function isAdmin(userId: string): Promise<boolean> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: true }
-    });
-    
-    return user?.role === "ADMIN";
-  } catch (error) {
-    console.error("Error checking admin status:", error);
-    return false;
-  }
-}
-
-// Helper function to check if user has editor permissions (both EDITOR and ADMIN roles)
-export async function hasEditorPermission(userId: string): Promise<boolean> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: true }
-    });
-    
-    return user?.role === "ADMIN" || user?.role === "EDITOR";
-  } catch (error) {
-    console.error("Error checking editor permission:", error);
-    return false;
-  }
-}
+export default authOptions;
