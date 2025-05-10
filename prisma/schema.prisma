@@ -7,6 +7,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserRole {
+  USER
+  EDITOR
+  ADMIN
+}
+
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
@@ -14,7 +20,12 @@ model User {
   password      String?
   image         String?
   githubUsername String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   sessions      Session[]
+  posts         Post[]
+  comments      Comment[]
 }
 
 model Session {
@@ -23,4 +34,79 @@ model Session {
   userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  slug          String    @unique
+  title         String
+  description   String
+  content       String    @db.String
+  imageUrl      String
+  featuredImage ImageAsset? @relation(fields: [featuredImageId], references: [id], name: "featuredImage")
+  featuredImageId String?  @db.ObjectId
+  readTime      String?
+  views         Int       @default(0)
+  published     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  publishedAt   DateTime?
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      String    @db.ObjectId
+  tags          Tag[]     @relation(fields: [tagIds], references: [id])
+  tagIds        String[]  @db.ObjectId
+  comments      Comment[]
+  
+  @@index([authorId])
+  @@index([published])
+}
+
+model Tag {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  posts     Post[]   @relation(fields: [postIds], references: [id])
+  postIds   String[] @db.ObjectId
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String   @db.ObjectId
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String   @db.ObjectId
+  
+  @@index([postId])
+  @@index([authorId])
+}
+
+model ImageAsset {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  filename    String
+  originalUrl String
+  sizes       Json?    // Stores URLs for different sizes like { small: "url", medium: "url", large: "url" }
+  width       Int?
+  height      Int?
+  mimeType    String?
+  altText     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  featuredInPosts Post[] @relation("featuredImage")
+}
+
+// Settings for the blog CMS
+model SiteSettings {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  siteName          String   @default("Hoshizora")
+  siteDescription   String   @default("Anime Blog")
+  logo              String?
+  favicon           String?
+  primaryColor      String   @default("#102154")
+  secondaryColor    String   @default("#040720")
+  socialLinks       Json?    // Stores social media links
+  updatedAt         DateTime @updatedAt
 }

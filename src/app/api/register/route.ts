@@ -35,6 +35,9 @@ export async function POST(request: NextRequest) {
         password: hashed,
         image: null,
         githubUsername: null,
+        role: 'USER',
+        createdAt: new Date(),
+        updatedAt: new Date()
       })
 
       // Return new user

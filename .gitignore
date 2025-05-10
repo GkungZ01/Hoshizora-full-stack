@@ -12,7 +12,7 @@
 /.vscode/
 .claude
 prisma/migrations
-
+SETUP-CMS.md
 # testing
 /coverage
 

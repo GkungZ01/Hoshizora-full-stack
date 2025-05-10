@@ -1,10 +1,10 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "@/lib/prisma";
+import GitHubProvider from "next-auth/providers/github";
 import { compare } from "bcryptjs";
+import prisma from "./prisma";
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
       name: "GitHub",
@@ -30,7 +30,6 @@ const authOptions: NextAuthOptions = {
           if (!user || !user.password) {
             return null;
           }
-
           
           const isPasswordValid = await compare(credentials.password, user.password);
 
@@ -54,49 +53,44 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      
       if (account?.provider === "github") {
-        
         const existingUser = await prisma.user.findFirst({
           where: { email: user.email },
         });
 
         if (!existingUser) {
-
           await prisma.user.create({
             data: {
               email: user.email,
               name: user.name,
               image: user.image,
               githubUsername: (profile as any)?.login,
-              role: 'USER',
-              createdAt: new Date(),
-              updatedAt: new Date()
+              role: "USER" // Default role
             },
-          })
-          console.log( new Date().toISOString() + " - New user signed in:", user.email);
+          });
+          console.log(new Date().toISOString() + " - New user signed in:", user.email);
         }
       }
-      return true; 
+      return true;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role || 'USER';
+        token.role = user.role || "USER";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id as string;
-        (session.user as any).role = token.role as string;
+        (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
       }
       return session;
     }
   },
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, 
+    maxAge: 24 * 60 * 60, // 1 day
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
@@ -105,6 +99,32 @@ const authOptions: NextAuthOptions = {
   },
 };
 
-const handler = NextAuth(authOptions);
+// Helper function to check if user has admin permissions
+export async function isAdmin(userId: string): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true }
+    });
+    
+    return user?.role === "ADMIN";
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+}
 
-export { handler as GET, handler as POST };
+// Helper function to check if user has editor permissions (both EDITOR and ADMIN roles)
+export async function hasEditorPermission(userId: string): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true }
+    });
+    
+    return user?.role === "ADMIN" || user?.role === "EDITOR";
+  } catch (error) {
+    console.error("Error checking editor permission:", error);
+    return false;
+  }
+}

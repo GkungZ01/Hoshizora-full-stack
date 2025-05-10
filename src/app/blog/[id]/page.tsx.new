@@ -1,0 +1,122 @@
+'use client'
+
+import React, { useEffect, useRef, use } from 'react'
+import Link from 'next/link'
+import { FiClock, FiTag, FiEye, FiArrowLeft } from 'react-icons/fi'
+import styles from './blogPost.module.css'
+import { blogs } from './metadata'
+import OptimizedImage from '@/components/OptimizedImage'
+
+type Props = {
+  params: { id: string }
+}
+
+export default function BlogPost({ params }: Props) {
+  // Unwrap params properly with React.use()
+  const unwrappedParams = use(params)
+  const blog = blogs.find(blog => blog.id === unwrappedParams.id)
+  const starsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (starsRef.current) {
+      const starsContainer = starsRef.current
+      starsContainer.innerHTML = ''
+
+      // Create subtle stars for background
+      const numStars = 80
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div')
+        star.className = styles.star
+
+        const x = Math.random() * 100
+        const y = Math.random() * 100
+        star.style.left = `${x}%`
+        star.style.top = `${y}%`
+
+        // Smaller stars for minimal design
+        const scale = Math.random() * 1.2 + 0.3
+        const opacity = Math.random() * 0.5 + 0.2
+        const duration = Math.random() * 3 + 3
+        const delay = Math.random() * 2
+
+        star.style.setProperty('--scale', scale.toString())
+        star.style.setProperty('--opacity', opacity.toString())
+        star.style.setProperty('--duration', `${duration}s`)
+        star.style.setProperty('--delay', `${delay}s`)
+
+        starsContainer.appendChild(star)
+      }
+    }
+  }, [])
+
+  if (!blog) {
+    return <div className="min-h-screen flex items-center justify-center">Post not found</div>
+  }
+
+  return (
+    <div className={styles.blogPostContainer}>
+      <div className={styles.starryBackground}></div>
+      <div className={styles.stars} ref={starsRef}></div>
+
+      <article className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button */}
+          <Link
+            href="/blog"
+            className={styles.backButton}
+          >
+            <FiArrowLeft className="w-5 h-5" />
+            กลับไปยังหน้าบทความ
+          </Link>
+
+          <div className={`${styles.imageContainer} ${styles.fadeIn} ${styles.delayAnimation1}`}>
+            <OptimizedImage
+              src={blog.imageUrl}
+              alt={blog.title}
+              fill
+              className="object-cover"
+              priority={true}
+              quality={90}
+            />
+          </div>
+
+          <div className={`${styles.fadeIn} ${styles.delayAnimation2}`}>
+            {/* Tags */}
+            <div className={styles.tagContainer}>
+              {blog.tags.map((tag) => (
+                <span key={tag} className={styles.tag}>
+                  <FiTag className="mr-1" /> {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* Title */}
+            <h1 className={styles.title}>{blog.title}</h1>
+
+            {/* Metadata */}
+            <div className={styles.metaContainer}>
+              <span className={styles.metaItem}>
+                <FiClock className="mr-1" /> {blog.readTime}
+              </span>
+              <span className={styles.metaItem}>
+                <FiEye className="mr-1" /> {blog.views} ครั้ง
+              </span>
+              <time className={styles.dateItem}>
+                {new Date(blog.date).toLocaleDateString('th-TH', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+
+            {/* Content */}
+            <div className={`${styles.contentContainer} ${styles.fadeIn} ${styles.delayAnimation3}`}>
+              <p>{blog.description}</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  )
+}

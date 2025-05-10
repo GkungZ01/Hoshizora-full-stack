@@ -9,7 +9,10 @@
     "lint": "next lint",
     "prisma:migrate": "prisma migrate dev",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate",
-    "add-user": "dotenv -e .env -- node src/scripts/add-user.mjs"
+    "db:seed": "node src/scripts/seed-database.mjs",
+    "db:reset": "npx prisma db push --force-reset && npm run db:seed",
+    "add-user": "node src/scripts/add-user.mjs",
+    "add-admin": "node src/scripts/add-admin-mongodb.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",

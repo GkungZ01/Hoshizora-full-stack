@@ -3,11 +3,12 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiUser, FiLogIn, FiLogOut, FiSettings, FiChevronDown } from "react-icons/fi";
+import { FiUser, FiLogIn, FiLogOut, FiSettings, FiChevronDown, FiLayout, FiEdit } from "react-icons/fi";
 import { createPortal } from 'react-dom';
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
+  const userRole = (session?.user as any)?.role;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -148,6 +149,24 @@ export default function AuthButton() {
                 <FiSettings className="mr-3 text-[#70a5fd]" />
                 ตั้งค่า
               </Link>
+
+              {/* Show CMS link only for Admin and Editor */}
+              {(userRole === 'ADMIN' || userRole === 'EDITOR') && (
+                <>
+                  <div className="mx-2 my-2 border-t border-[rgba(112,165,253,0.15)]"></div>
+                  <div className="px-4 py-1">
+                    <span className="text-xs font-semibold text-[#70a5fd] opacity-80">ADMIN AREA</span>
+                  </div>
+                  <Link
+                    href="/cms"
+                    className={`flex items-center px-4 py-2.5 text-white opacity-90 hover:opacity-100 hover:bg-[rgba(112,165,253,0.15)] rounded-md mx-2 transition-all duration-200 ${userRole === 'ADMIN' ? 'bg-[rgba(112,165,253,0.1)]' : ''}`}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    <FiLayout className="mr-3 text-[#70a5fd]" />
+                    <span>จัดการเว็บไซต์ (CMS)</span>
+                  </Link>
+                </>
+              )}
               <div className="px-3 pt-2 pb-3">
                 <button
                   onClick={() => {
