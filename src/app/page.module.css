@@ -6,7 +6,51 @@
   width: 100%;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #040720 0%, #0f1e4a 100%);
+  background: radial-gradient(ellipse at top, #102154 0%, #040720 60%);
+  background-size: 200% 200%;
+  animation: gradientBg 30s ease infinite;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 35%, rgba(30, 64, 175, 0.15) 0%, transparent 25%),
+    radial-gradient(circle at 85% 20%, rgba(72, 125, 213, 0.1) 0%, transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(112, 165, 253, 0.08) 0%, transparent 50%);
+  z-index: 0;
+  opacity: 0.8;
+  animation: shimmerEffect 15s ease-in-out infinite alternate;
+}
+
+@keyframes gradientBg {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    opacity: 0.5;
+    background-position: 0% 0%;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.5;
+    background-position: 100% 100%;
+  }
 }
 
 .stars {
@@ -40,65 +84,86 @@
   }
 }
 
-.shootingStar {
-  position: absolute;
-  width: 100px;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-  transform: rotate(var(--angle));
-  top: var(--top);
-  left: var(--left);
-  animation: shooting 4s linear infinite;
-  animation-delay: var(--delay);
-}
-
-@keyframes shooting {
-  0% {
-    transform: translateX(-100px) rotate(var(--angle));
-    opacity: 0;
-  }
-  5% {
-    opacity: 1;
-  }
-  10% {
-    transform: translateX(calc(var(--distance) * 1px)) rotate(var(--angle));
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(calc(var(--distance) * 1px)) rotate(var(--angle));
-    opacity: 0;
-  }
-}
+/* Shooting star styles removed for minimal design */
 
 .title {
-  font-size: 4rem;
-  color: transparent;
-  background: linear-gradient(
-    45deg,
-    #1e90ff 0%,
+  font-size: 4.5rem;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  position: relative;
+  z-index: 10;
+  white-space: nowrap;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.9) 0%,
     #70a5fd 25%,
     #ffffff 50%,
     #70a5fd 75%,
-    #1e90ff 100%
-  );
+    rgba(255,255,255,0.9) 100%);
   background-size: 200% auto;
-  background-clip: text;
+  color: transparent;
   -webkit-background-clip: text;
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  position: relative;
-  z-index: 10;
-  animation: shine 6s linear infinite;
-  white-space: nowrap;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(112, 165, 253, 0.4);
+  animation: titleGradient 10s linear infinite, titleFloat 6s ease-in-out infinite;
 }
 
-@keyframes shine {
+.title::before, .title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.title::before {
+  text-shadow: -1px 0 2px rgba(112, 165, 253, 0.6);
+  animation: glitch 3s infinite linear alternate-reverse;
+}
+
+.title::after {
+  text-shadow: 3px 0 2px rgba(30, 64, 175, 0.4);
+  animation: glitch 2s infinite linear alternate-reverse;
+}
+
+@keyframes titleGradient {
   0% {
     background-position: 0% center;
   }
   100% {
     background-position: 200% center;
+  }
+}
+
+@keyframes titleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
   }
 }
 
@@ -122,25 +187,38 @@
 }
 
 .subtitle {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 1.2rem;
   margin-top: 2rem;
   text-align: center;
-  font-family: monospace;
+  font-family: 'Space Mono', monospace;
+  position: relative;
   overflow: hidden;
   white-space: nowrap;
   opacity: 0;
-  animation: fadeIn 1s ease 3s forwards, typeSubtitle 2s steps(35) 3s forwards;
   width: 0;
-  border-right: 3px solid #70a5fd;
+  border-right: 3px solid rgba(112, 165, 253, 0.7);
+  animation: typewriter 3s steps(25) 1s forwards, blink 0.75s step-end infinite;
+  text-shadow: 0 0 10px rgba(112, 165, 253, 0.3);
 }
 
-@keyframes typeSubtitle {
+@keyframes typewriter {
   from {
     width: 0;
+    opacity: 1;
   }
   to {
-    width: 35ch;
+    width: 25ch;
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: rgba(112, 165, 253, 0.7);
   }
 }
 
@@ -155,27 +233,24 @@
 
 .orbitalRing {
   position: absolute;
-  border: 1px solid rgba(112, 165, 253, 0.2);
+  border: 1px solid rgba(112, 165, 253, 0.15);
   border-radius: 50%;
-  animation: rotateRing 10s linear infinite;
+  animation: rotateRing 15s linear infinite, pulseRing 8s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(30, 64, 175, 0.05);
 }
 
 .ring1 {
   width: 300px;
   height: 300px;
-  animation-duration: 20s;
+  animation-duration: 25s, 6s;
+  border-width: 1.5px;
 }
 
 .ring2 {
-  width: 500px;
-  height: 500px;
-  animation-duration: 30s;
-}
-
-.ring3 {
-  width: 700px;
-  height: 700px;
-  animation-duration: 40s;
+  width: 480px;
+  height: 480px;
+  animation-duration: 40s, 8s;
+  opacity: 0.8;
 }
 
 @keyframes rotateRing {
@@ -187,36 +262,88 @@
   }
 }
 
+@keyframes pulseRing {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(30, 64, 175, 0.05);
+    border-color: rgba(112, 165, 253, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(30, 64, 175, 0.1);
+    border-color: rgba(112, 165, 253, 0.25);
+  }
+}
+
 .orb {
   position: absolute;
   width: 6px;
   height: 6px;
   background-color: #70a5fd;
   border-radius: 50%;
-  box-shadow: 0 0 10px 2px #70a5fd;
+  box-shadow: 0 0 8px 2px rgba(112, 165, 253, 0.6);
+  animation: pulseOrb 4s ease-in-out infinite;
+}
+
+@keyframes pulseOrb {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px 2px rgba(112, 165, 253, 0.6);
+  }
+  50% {
+    transform: scale(1.5);
+    box-shadow: 0 0 15px 3px rgba(112, 165, 253, 0.8);
+  }
 }
 
 @media (max-width: 768px) {
   .title {
     font-size: 2.5rem;
+    letter-spacing: 0.15em;
   }
-  
+
   .subtitle {
-    font-size: 1rem;
+    font-size: 0.85rem;
+    margin-top: 1.5rem;
   }
-  
+
   .ring1 {
     width: 200px;
     height: 200px;
   }
-  
+
   .ring2 {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
   }
-  
-  .ring3 {
-    width: 400px;
-    height: 400px;
+
+  @keyframes typewriter {
+    from {
+      width: 0;
+      opacity: 1;
+    }
+    to {
+      width: 20ch;
+      opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .subtitle {
+    font-size: 0.7rem;
+  }
+
+  .ring1 {
+    width: 150px;
+    height: 150px;
+  }
+
+  .ring2 {
+    width: 250px;
+    height: 250px;
   }
 }

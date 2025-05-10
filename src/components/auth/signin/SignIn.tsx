@@ -1,19 +1,19 @@
 'use client'
 
-import { signIn, useSession, signOut } from "next-auth/react";
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { FiMail, FiLock, FiGithub } from "react-icons/fi";
+import { FiMail, FiLock, FiGithub, FiLogIn, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 import styles from "./SignIn.module.css";
 
 export default function Login() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [successMessage, setSuccessMessage] = useState("");
+  const starsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    
+    // Check for registration success
     const params = new URLSearchParams(window.location.search);
     if (params.get("registered") === "true") {
       setSuccessMessage("ลงทะเบียนสำเร็จ กรุณาเข้าสู่ระบบด้วยบัญชีที่สร้างไว้");
@@ -22,8 +22,37 @@ export default function Login() {
     if (status === "authenticated") {
       router.push("/");
     }
+
+    // Create starry background
+    if (starsRef.current) {
+      const starsContainer = starsRef.current;
+      starsContainer.innerHTML = '';
+
+      const numStars = 80;
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = styles.star;
+
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        star.style.left = `${x}%`;
+        star.style.top = `${y}%`;
+
+        const scale = Math.random() * 1.2 + 0.3;
+        const opacity = Math.random() * 0.5 + 0.2;
+        const duration = Math.random() * 3 + 3;
+        const delay = Math.random() * 2;
+
+        star.style.setProperty('--scale', scale.toString());
+        star.style.setProperty('--opacity', opacity.toString());
+        star.style.setProperty('--duration', `${duration}s`);
+        star.style.setProperty('--delay', `${delay}s`);
+
+        starsContainer.appendChild(star);
+      }
+    }
   }, [status, router]);
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -56,7 +85,6 @@ export default function Login() {
         return;
       }
 
-      
       router.push("/");
       router.refresh();
     } catch (err) {
@@ -68,35 +96,39 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center px-4">
+    <div className="w-full h-full flex items-center justify-center px-4 relative">
+      <div className={styles.starryBackground}></div>
+      <div className={styles.stars} ref={starsRef}></div>
+
       <div className={styles.glassCard}>
-        <h1 className="text-3xl font-bold text-center mb-8">Welcome Back</h1>
+        <h1 className={styles.pageTitle}>ยินดีต้อนรับกลับ</h1>
 
         {successMessage && (
-          <div className="alert alert-success mb-4">
+          <div className={styles.alertSuccess}>
+            <FiCheckCircle className="text-lg" />
             <span>{successMessage}</span>
           </div>
         )}
 
         {error && (
-          <div className="alert alert-error mb-4">
+          <div className={styles.alertError}>
+            <FiAlertCircle className="text-lg" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="form-control">
-            <label className="label" htmlFor="email">
-              <span className="label-text">Email</span>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="email">
+              อีเมล
             </label>
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2" />
+              <FiMail className={styles.inputIcon} />
               <input
                 id="email"
                 name="email"
                 type="email"
                 placeholder="your@email.com"
-                className="input input-bordered pl-10 w-full"
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -104,47 +136,57 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="form-control">
-            <label className="label" htmlFor="password">
-              <span className="label-text">Password</span>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="password">
+              รหัสผ่าน
             </label>
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2" />
+              <FiLock className={styles.inputIcon} />
               <input
                 id="password"
                 name="password"
                 type="password"
                 placeholder="••••••••"
-                className="input input-bordered pl-10 w-full"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
             </div>
-            <label className="label">
-              <a href="#" className="label-text-alt link link-hover">
-                Forgot password?
-              </a>
-            </label>
+            <a href="#" className={styles.forgotPasswordLink}>
+              ลืมรหัสผ่าน?
+            </a>
           </div>
 
-          <button type="submit" className={`btn btn-primary w-full ${loading ? "loading" : ""}`} disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
+          <button
+            type="submit"
+            className={styles.primaryButton}
+            disabled={loading}
+          >
+            {loading ? (
+              <>กำลังเข้าสู่ระบบ...</>
+            ) : (
+              <>
+                <FiLogIn size={18} />
+                เข้าสู่ระบบ
+              </>
+            )}
           </button>
         </form>
 
-        <div className="divider my-6">OR</div>
+        <div className={styles.divider}>หรือ</div>
 
-        <button className="btn btn-outline w-full gap-2"
-          onClick={() => signIn("github")}>
-          <FiGithub className="w-5 h-5" />
-          Continue with GitHub
+        <button
+          className={styles.secondaryButton}
+          onClick={() => signIn("github")}
+        >
+          <FiGithub size={18} />
+          เข้าสู่ระบบด้วย GitHub
         </button>
 
-        <p className="text-center mt-4">
-          Don't have an account?{" "}
-          <a href="/auth/signUp" className="link link-primary">
-            Sign up
+        <p className={styles.footerText}>
+          ยังไม่มีบัญชี?{" "}
+          <a href="/auth/signUp" className={styles.footerLink}>
+            สมัครสมาชิก
           </a>
         </p>
       </div>

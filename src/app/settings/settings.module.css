@@ -55,31 +55,29 @@
 }
 
 .settingsCard {
-  background: rgba(20, 30, 60, 0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 30px rgba(10, 15, 30, 0.1);
+  background: rgba(20, 30, 60, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(10, 15, 30, 0.08);
   overflow: hidden;
-  transform: translateY(0);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
   margin-bottom: 1.5rem;
 }
 
 .settingsCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(10, 15, 30, 0.2);
+  box-shadow: 0 6px 25px rgba(10, 15, 30, 0.12);
 }
 
 .cardHeader {
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(90deg, rgba(30, 58, 138, 0.3) 0%, rgba(30, 64, 175, 0.3) 100%);
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(30, 58, 138, 0.15);
 }
 
 .cardTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: white;
   margin: 0;
   display: flex;
@@ -117,28 +115,28 @@
 
 .input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  padding: 0.7rem 1rem 0.7rem 2.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.4rem;
   color: white;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .input:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .input:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(112, 165, 253, 0.5);
-  box-shadow: 0 0 0 2px rgba(112, 165, 253, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(112, 165, 253, 0.4);
+  box-shadow: 0 0 0 1px rgba(112, 165, 253, 0.15);
 }
 
 .input:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -150,31 +148,27 @@
 
 .submitButton {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.7rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: rgba(112, 165, 253, 0.2);
-  border: 1px solid rgba(112, 165, 253, 0.3);
+  background: rgba(112, 165, 253, 0.1);
+  border: 1px solid rgba(112, 165, 253, 0.2);
   color: white;
-  border-radius: 0.5rem;
+  border-radius: 0.4rem;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease;
   cursor: pointer;
 }
 
 .submitButton:hover {
-  background: rgba(112, 165, 253, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(112, 165, 253, 0.2);
+  background: rgba(112, 165, 253, 0.2);
 }
 
 .submitButton:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: wait;
-  transform: none;
-  box-shadow: none;
 }
 
 .alert {
@@ -238,35 +232,7 @@
   }
 }
 
-.shootingStar {
-  position: absolute;
-  width: 100px;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-  transform: rotate(var(--angle));
-  top: var(--top);
-  left: var(--left);
-  animation: shooting 4s linear infinite;
-  animation-delay: var(--delay);
-}
-
-@keyframes shooting {
-  0% {
-    transform: translateX(-100px) rotate(var(--angle));
-    opacity: 0;
-  }
-  5% {
-    opacity: 1;
-  }
-  10% {
-    transform: translateX(calc(var(--distance) * 1px)) rotate(var(--angle));
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(calc(var(--distance) * 1px)) rotate(var(--angle));
-    opacity: 0;
-  }
-}
+/* Shooting star styles removed for minimal design */
 
 .fadeIn {
   animation: fadeIn 0.5s ease-out forwards;

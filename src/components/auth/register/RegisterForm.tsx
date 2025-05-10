@@ -1,10 +1,9 @@
 'use client'
-import type { Metadata } from 'next'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { FiMail, FiLock, FiUser, FiGithub } from 'react-icons/fi'
+import { FiMail, FiLock, FiUser, FiGithub, FiUserPlus, FiAlertCircle } from 'react-icons/fi'
 import styles from './RegisterForm.module.css'
 
 export default function RegisterForm() {
@@ -17,13 +16,43 @@ export default function RegisterForm() {
   })
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
   const [error, setError] = useState('')
+  const starsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Create starry background
+    if (starsRef.current) {
+      const starsContainer = starsRef.current
+      starsContainer.innerHTML = ''
+
+      const numStars = 80
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div')
+        star.className = styles.star
+
+        const x = Math.random() * 100
+        const y = Math.random() * 100
+        star.style.left = `${x}%`
+        star.style.top = `${y}%`
+
+        const scale = Math.random() * 1.2 + 0.3
+        const opacity = Math.random() * 0.5 + 0.2
+        const duration = Math.random() * 3 + 3
+        const delay = Math.random() * 2
+
+        star.style.setProperty('--scale', scale.toString())
+        star.style.setProperty('--opacity', opacity.toString())
+        star.style.setProperty('--duration', `${duration}s`)
+        star.style.setProperty('--delay', `${delay}s`)
+
+        starsContainer.appendChild(star)
+      }
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    
     setError('')
 
     if (!formData.acceptTerms) {
@@ -66,28 +95,31 @@ export default function RegisterForm() {
   }
 
   return (
-    <main className="w-full h-full flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-      <div className={`${styles.glassCard} w-full max-w-md mx-auto`}>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8">Create Account</h1>
+    <div className="w-full h-full flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8 relative">
+      <div className={styles.starryBackground}></div>
+      <div className={styles.stars} ref={starsRef}></div>
+
+      <div className={styles.glassCard}>
+        <h1 className={styles.pageTitle}>สร้างบัญชีใหม่</h1>
 
         {error && (
-          <div className="alert alert-error mb-4">
+          <div className={styles.alertError}>
+            <FiAlertCircle size={18} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text text-sm sm:text-base">Username</span>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>
+              ชื่อผู้ใช้
             </label>
             <div className="relative">
-              <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
+              <FiUser className={styles.inputIcon} />
               <input
                 type="text"
                 name="username"
-                placeholder="username"
-                className="input input-bordered pl-10 w-full h-12 text-base sm:text-lg"
+                placeholder="ชื่อผู้ใช้"
                 value={formData.username}
                 onChange={(e) => setFormData((prev) => ({ ...prev, username: e.target.value }))}
                 required
@@ -95,17 +127,16 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text text-sm sm:text-base">Email</span>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>
+              อีเมล
             </label>
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
+              <FiMail className={styles.inputIcon} />
               <input
                 type="email"
                 name="email"
                 placeholder="your@email.com"
-                className="input input-bordered pl-10 w-full h-12 text-base sm:text-lg"
                 value={formData.email}
                 onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                 required
@@ -113,17 +144,16 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text text-sm sm:text-base">Password</span>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>
+              รหัสผ่าน
             </label>
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
+              <FiLock className={styles.inputIcon} />
               <input
                 type="password"
                 name="password"
                 placeholder="••••••••"
-                className="input input-bordered pl-10 w-full h-12 text-base sm:text-lg"
                 value={formData.password}
                 onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
                 required
@@ -132,17 +162,16 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text text-sm sm:text-base">Confirm Password</span>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>
+              ยืนยันรหัสผ่าน
             </label>
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
+              <FiLock className={styles.inputIcon} />
               <input
                 type="password"
                 name="confirmPassword"
                 placeholder="••••••••"
-                className="input input-bordered pl-10 w-full h-12 text-base sm:text-lg"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
                 required
@@ -150,7 +179,7 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          <div className="form-control">
+          <div className={styles.formGroup}>
             <label className={styles.checkboxLabel}>
               <input
                 type="checkbox"
@@ -158,35 +187,44 @@ export default function RegisterForm() {
                 checked={formData.acceptTerms}
                 onChange={(e) => setFormData((prev) => ({ ...prev, acceptTerms: e.target.checked }))}
               />
-              <span className="label-text">I accept the terms and conditions</span>
+              <span>ยอมรับข้อกำหนดและเงื่อนไขการใช้งาน</span>
             </label>
           </div>
 
-          <div className="form-control mt-6">
-            <button type="submit" className="btn btn-primary w-full h-12 text-base sm:text-lg" disabled={loading}>
-              {loading ? "Creating Account..." : "Sign up"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className={styles.primaryButton}
+            disabled={loading}
+          >
+            {loading ? (
+              <>กำลังสร้างบัญชี...</>
+            ) : (
+              <>
+                <FiUserPlus size={18} />
+                สมัครสมาชิก
+              </>
+            )}
+          </button>
         </form>
 
-        <div className="divider my-6 sm:my-8">OR</div>
+        <div className={styles.divider}>หรือ</div>
 
         <button
           type="button"
           onClick={() => signIn('github')}
-          className="btn btn-outline w-full h-12 text-base sm:text-lg gap-2"
+          className={styles.secondaryButton}
         >
-          <FiGithub className="w-5 h-5" />
-          Continue with GitHub
+          <FiGithub size={18} />
+          สมัครด้วย GitHub
         </button>
 
-        <p className="text-center mt-6 sm:mt-8 text-sm sm:text-base">
-          Already have an account?{" "}
-          <Link href="/auth/signIn" className="link link-primary">
-            Sign in
+        <p className={styles.footerText}>
+          มีบัญชีอยู่แล้ว?{" "}
+          <Link href="/auth/signIn" className={styles.footerLink}>
+            เข้าสู่ระบบ
           </Link>
         </p>
       </div>
-    </main>
+    </div>
   );
 }

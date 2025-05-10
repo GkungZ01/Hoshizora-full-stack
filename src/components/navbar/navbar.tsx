@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <div
-      className={`w-full h-fit navbar sticky top-0 z-50 px-4 sm:px-6 lg:px-8 ${styles.navbarContainer}`}
+      className={`w-full h-fit navbar sticky top-0 z-40 px-4 sm:px-6 lg:px-8 ${styles.navbarContainer}`}
     >
       <div className="flex-1">
         <Link
@@ -50,7 +50,7 @@ const Navbar = () => {
       </div>
 
       {isOpen && (
-        <div className={`lg:hidden absolute top-full left-0 right-0 p-4 border-b border-primary/30 ${styles.mobileMenu}`}>
+        <div className={`lg:hidden absolute top-full left-0 right-0 p-4 border-b border-primary/30 ${styles.mobileMenu} z-40`}>
           <div className="flex flex-col gap-2 w-full">
             {menuList.map((item, index) => (
               <Link

@@ -1,10 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Itim&family=Macondo&family=Mitr:wght@200;300;400;500;600;700&family=Outfit:wght@100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .backdrop-blur-md {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .backdrop-blur-lg {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+:root {
+  --mali-font: 'Mali', cursive;
+}
+
 body {
-  font-family: "Outfit", serif;
+  font-family: var(--mali-font), sans-serif;
+  font-weight: 400;
+}
+
+/* Minimal global styles */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* Add subtle text shadow for light effect */
+.text-glow {
+  text-shadow: 0 0 10px rgba(112, 165, 253, 0.3);
+}
+
+/* Animation for dropdown */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-in {
+  animation: fadeSlideIn 0.2s ease-out forwards;
 }
 

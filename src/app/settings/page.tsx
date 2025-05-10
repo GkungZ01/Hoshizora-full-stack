@@ -42,25 +42,23 @@ export default function SettingsPage() {
       const starsContainer = starsRef.current
       starsContainer.innerHTML = ''
 
-      
-      const numStars = 150
+      // Reduced number of stars for a more minimal design
+      const numStars = 80
       for (let i = 0; i < numStars; i++) {
         const star = document.createElement('div')
         star.className = styles.star
 
-        
         const x = Math.random() * 100
         const y = Math.random() * 100
         star.style.left = `${x}%`
         star.style.top = `${y}%`
 
-        
-        const scale = Math.random() * 1.5 + 0.5
-        const opacity = Math.random() * 0.7 + 0.3
-        const duration = Math.random() * 3 + 2
+        // More subtle stars
+        const scale = Math.random() * 1.2 + 0.3
+        const opacity = Math.random() * 0.5 + 0.2
+        const duration = Math.random() * 3 + 3
         const delay = Math.random() * 2
 
-        
         star.style.setProperty('--scale', scale.toString())
         star.style.setProperty('--opacity', opacity.toString())
         star.style.setProperty('--duration', `${duration}s`)
@@ -69,28 +67,7 @@ export default function SettingsPage() {
         starsContainer.appendChild(star)
       }
 
-      
-      const numShootingStars = 5
-      for (let i = 0; i < numShootingStars; i++) {
-        const shootingStar = document.createElement('div')
-        shootingStar.className = styles.shootingStar
-
-        
-        const top = Math.random() * 70 + 5
-        const left = Math.random() * 80
-        const angle = Math.random() * 60 - 30
-        const delay = Math.random() * 10
-        const distance = Math.random() * 200 + 300
-
-        
-        shootingStar.style.setProperty('--top', `${top}%`)
-        shootingStar.style.setProperty('--left', `${left}%`)
-        shootingStar.style.setProperty('--angle', `${angle}deg`)
-        shootingStar.style.setProperty('--delay', `${delay}s`)
-        shootingStar.style.setProperty('--distance', distance.toString())
-
-        starsContainer.appendChild(shootingStar)
-      }
+      // Shooting stars removed for minimal design
     }
   }, [session, status, router])
 
